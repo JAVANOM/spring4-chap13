@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+             http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	version="3.1">
+    
+    <servlet>
+        <!-- DispatcherServlet을 dispatcher라는 이름으로 등록  -->
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <!-- contextConfigLocation 초기 파라미터 값을 지정 - 스프링 설정 xml 파일 목록 지정 (줄이나, 콤마로 구별) -->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>
+                 classpath:spring-mvc.xml
+                 classpath:spring-controller.xml
+                 classpath:spring-member.xml
+            </param-value>
+        </init-param>
+        <!-- Tomcat과 같은 컨테이너가 웹 어플리케이션을 구동할 때 이 서블릿을 함께 실행하도록 한다. -->
+        <load-on-startup>1</load-on-startup>
+
+    </servlet>
+    
+    <!-- 모든 요청을 dispatcher 서블릿이 처리하도록 매핑 진행  -->
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+     
+    <!-- 인코딩 처리를 위한 서블릿 필터를 등록  -->
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <!-- 인코딩 처리 클래스 제공  -->
+        <filter-class>
+            org.springframework.web.filter.CharacterEncodingFilter
+        </filter-class>
+        <!-- 인코딩 초기화 파라미터를 이용해서 HTTP 요청 파라미터를 읽어 올 때 사용할 인코딩을 지정  -->
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <!-- 모든 요청에 인코딩 필터 지정  -->
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>  
+</web-app>
+
+

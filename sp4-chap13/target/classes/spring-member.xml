@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+     
+     <!-- 외부 프로퍼티 파일로부터 정보를 읽어와 빈 설정에 입력한 플레이스 홀퍼로 의 값을 프로퍼티 파일에 존재하는 값으로 변경 한다.  -->
+     <context:property-placeholder location="classpath:db/db.properties" />
+     
+     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+       destroy-method="close">
+       <property name="driverClass" value="${db.driver}"/>
+       <property name="jdbcUrl"
+                 value="${db.jdbcUrl}"/>
+       <property name="user" value="${db.user}"/>
+       <property name="password" value="${db.password}"/>
+     <!--   <property name="maxPoolSize" value="100"/>
+       <property name="maxIdleTime" value="600"/>
+       <property name="idleConnectionTestPeriod" value="300"/>  -->       
+     </bean>
+     
+     
+     <!-- 스프링에서 제공하는 트랜잭션 관리자 인터페이스를 사용  -->
+     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+          <!-- 트랜잭션 연동에 사용할 DataSource를 지정  -->
+          <property name="dataSource" ref="dataSource"/>
+     </bean>
+     
+     <bean id="memberDao" class="spring.MemberDao">
+         <constructor-arg ref="dataSource"/>
+     </bean>
+     
+     <bean id="memberRegSvc" class="spring.MemberRegisterService">
+         <constructor-arg ref="memberDao"/>
+     </bean>
+     
+     <bean id="changePwdSvc" class="spring.ChangePasswordService">
+         <constructor-arg ref="memberDao"/>
+     </bean>
+     
+     <bean id="authService" class="spring.AuthService">
+         <property name="memberDao" ref="memberDao" />
+     </bean>
+     
+   
+</beans>
+
